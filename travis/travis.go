@@ -151,13 +151,13 @@ func (r *Travis) tryClean(ctx context.Context, sessionID string) (bool, error) {
 		r.mu.Unlock()
 		return false, errors.Errorf("invalid sessionid")
 	}
+	defer r.mu.Unlock()
 	st, err := getJobInfo(context.TODO(), s.jobID)
 	if err != nil {
 		return false, err
 	}
 	if st.Status != "started" {
 		delete(r.m, sessionID)
-		r.mu.Unlock()
 		return true, nil
 	}
 	return false, nil
